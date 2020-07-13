@@ -128,6 +128,14 @@
          update discuss_post set comment_count = #{commentCount} where id = #{id}
     </update>
 
+    <update id="updateType">
+         update discuss_post set type = #{type} where id = #{id}
+    </update>
+
+    <update id="updateStatus">
+          update discuss_post set status = #{status} where id = #{id}
+    </update>
+
     <!--通过主键删除-->
     <delete id="deleteById">
         delete from nowcoder.discuss_post where id = #{id}

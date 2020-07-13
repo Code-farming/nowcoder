@@ -64,4 +64,10 @@ public interface DiscussPostService {
 
     void updateCommentCount(Integer entityId, int commentCount);
 
+    void updateType(int id,int type);
+
+    void updateStatus(int id,int status);
+
+
+
 }

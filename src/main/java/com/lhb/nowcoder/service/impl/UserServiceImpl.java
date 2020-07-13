@@ -11,6 +11,7 @@ import com.lhb.nowcoder.util.RedisKeyUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -218,32 +219,32 @@ public class UserServiceImpl implements UserService {
     @Override
     public Map<String, Object> updatePassword(String oldPassword, String newPassword, String confirmPassword) {
         Map<String, Object> map = new HashMap<>();
-        if (StringUtils.isBlank(oldPassword)){
+        if (StringUtils.isBlank(oldPassword)) {
             map.put("oldPasswordError", "原密码不能为空!");
             return map;
         }
-        if (StringUtils.isBlank(newPassword)){
+        if (StringUtils.isBlank(newPassword)) {
             map.put("newPasswordError", "新密码不能为空!");
             return map;
         }
-        if (StringUtils.isBlank(oldPassword)){
+        if (StringUtils.isBlank(oldPassword)) {
             map.put("confirmPasswordError", "确认密码不能为空!");
             return map;
         }
 
-        if (!newPassword.equals(confirmPassword)){
+        if (!newPassword.equals(confirmPassword)) {
             map.put("confirmPasswordError", "两次密码不一致!");
             return map;
         }
         User user = hostHolder.getUser();
-        oldPassword = NowCoderUtil.md5(oldPassword+user.getSalt());
-        if (!user.getPassword().equals(oldPassword)){
+        oldPassword = NowCoderUtil.md5(oldPassword + user.getSalt());
+        if (!user.getPassword().equals(oldPassword)) {
             map.put("oldPasswordError", "原密码错误!");
             return map;
         }
 
-        newPassword = NowCoderUtil.md5(newPassword+user.getSalt());
-        userDao.updatePassword(user.getId(),newPassword);
+        newPassword = NowCoderUtil.md5(newPassword + user.getSalt());
+        userDao.updatePassword(user.getId(), newPassword);
         clearCache(user.getId());
         return null;
     }
@@ -257,6 +258,7 @@ public class UserServiceImpl implements UserService {
 
     /**
      * 用户登录方法
+     *
      * @param username
      * @param password
      * @param expiredSeconds
@@ -304,7 +306,7 @@ public class UserServiceImpl implements UserService {
 //        loginTicketDao.insert(loginTicket);
         // 使用redis存储ticket
         String ticketKey = RedisKeyUtils.getTicketKey(loginTicket.getTicket());
-        redisTemplate.opsForValue().set(ticketKey,loginTicket);
+        redisTemplate.opsForValue().set(ticketKey, loginTicket);
 
         map.put("ticket", loginTicket.getTicket());
         return map;
@@ -318,18 +320,18 @@ public class UserServiceImpl implements UserService {
         String ticketKey = RedisKeyUtils.getTicketKey(ticket);
         LoginTicket loginTicket = (LoginTicket) redisTemplate.opsForValue().get(ticketKey);
         loginTicket.setStatus(1);
-        redisTemplate.opsForValue().set(ticketKey,loginTicket);
+        redisTemplate.opsForValue().set(ticketKey, loginTicket);
     }
 
     // redis优化性能
     // 1.优先从缓存中取值
-    private User getCache(int userId){
+    private User getCache(int userId) {
         String redisKey = RedisKeyUtils.getUserKey(userId);
         return (User) redisTemplate.opsForValue().get(redisKey);
     }
 
     // 2.取不到数据时初始化缓存数据
-    private User initCache(int userId){
+    private User initCache(int userId) {
         User user = userDao.selectById(userId);
         String userKey = RedisKeyUtils.getUserKey(userId);
         redisTemplate.opsForValue().set(userKey, user, 3600, TimeUnit.SECONDS);
@@ -337,8 +339,29 @@ public class UserServiceImpl implements UserService {
     }
 
     // 3.数据变更时清空缓存数据
-    private void clearCache(int userId){
+    private void clearCache(int userId) {
         String userKey = RedisKeyUtils.getUserKey(userId);
         redisTemplate.delete(userKey);
+    }
+
+    public Collection<? extends GrantedAuthority> getAuthorities(int userId) {
+        User user = userDao.selectById(userId);
+        List<GrantedAuthority> list = new ArrayList<>();
+
+        list.add(new GrantedAuthority() {
+            @Override
+            public String getAuthority() {
+                switch (user.getType()){
+                    case 1:
+                        return AUTHORITY_ADMIN;
+                    case 2:
+                        return AUTHORITY_MODERATOR;
+                    default:
+                        return AUTHORITY_USER;
+                }
+            }
+        });
+
+        return list;
     }
 }

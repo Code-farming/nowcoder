@@ -3,7 +3,9 @@ package com.lhb.nowcoder.service;
 import com.lhb.nowcoder.entity.LoginTicket;
 import com.lhb.nowcoder.entity.User;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.GrantedAuthority;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
@@ -75,4 +77,8 @@ public interface UserService {
     Map<String,Object> updatePassword(String oldPassword, String newPassword, String confirmPassword);
 
     User findUserByName(String username);
+
+    Collection<? extends GrantedAuthority> getAuthorities(int userId);
+
+
 }

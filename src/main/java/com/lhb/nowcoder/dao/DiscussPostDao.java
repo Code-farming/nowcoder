@@ -71,4 +71,9 @@ public interface DiscussPostDao {
     List<DiscussPost> selectDiscussPost(int userId, int offset, int limit);
 
     void updateCommentCount(@Param("id") Integer id, @Param("commentCount") int commentCount);
+
+    void updateType(@Param("id") int id,@Param("type") int type);
+
+    void updateStatus(@Param("id") int id,@Param("status") int status);
+
 }

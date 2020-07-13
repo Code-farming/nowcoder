@@ -32,7 +32,7 @@ public class CommentController {
 
     @Resource
     private EventProducer eventProducer;
-    private Event event1;
+
 
 
     @RequestMapping(path = "/add/{discussPostId}", method = RequestMethod.POST)

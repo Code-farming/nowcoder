@@ -5,6 +5,8 @@ import com.lhb.nowcoder.dao.DiscussPostDao;
 import com.lhb.nowcoder.service.DiscussPostService;
 import com.lhb.nowcoder.util.SensitiveFilter;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.util.HtmlUtils;
 
 import javax.annotation.Resource;
@@ -21,7 +23,8 @@ public class DiscussPostServiceImpl implements DiscussPostService {
     @Resource
     private DiscussPostDao discussPostDao;
 
-    @Resource SensitiveFilter sensitiveFilter;
+    @Resource
+    SensitiveFilter sensitiveFilter;
 
     @Override
     public int findDiscussPostRows(int userId) {
@@ -30,12 +33,12 @@ public class DiscussPostServiceImpl implements DiscussPostService {
 
     @Override
     public List<DiscussPost> findDiscussPosts(int userId, int offset, int limit) {
-        return discussPostDao.selectDiscussPost(userId,offset,limit);
+        return discussPostDao.selectDiscussPost(userId, offset, limit);
     }
 
     @Override
     public int addDiscussPost(DiscussPost post) {
-        if (post==null){
+        if (post == null) {
             throw new IllegalArgumentException("参数不能为空!");
         }
         // 转义html标签
@@ -65,7 +68,7 @@ public class DiscussPostServiceImpl implements DiscussPostService {
      * 查询多条数据
      *
      * @param offset 查询起始位置
-     * @param limit 查询条数
+     * @param limit  查询条数
      * @return 对象列表
      */
     @Override
@@ -108,9 +111,23 @@ public class DiscussPostServiceImpl implements DiscussPostService {
         return this.discussPostDao.deleteById(id) > 0;
     }
 
+    @Transactional(propagation = Propagation.REQUIRED)
     @Override
     public void updateCommentCount(Integer entityId, int commentCount) {
-        this.discussPostDao.updateCommentCount(entityId,commentCount);
+        this.discussPostDao.updateCommentCount(entityId, commentCount);
+    }
+
+
+    @Transactional(propagation = Propagation.REQUIRED)
+    @Override
+    public void updateType(int id, int type) {
+        this.discussPostDao.updateType(id, type);
+    }
+
+    @Transactional(propagation = Propagation.REQUIRED)
+    @Override
+    public void updateStatus(int id, int status) {
+        this.discussPostDao.updateStatus(id, status);
     }
 
 

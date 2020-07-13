@@ -15,8 +15,9 @@ public class WebMvcConfig implements WebMvcConfigurer {
     @Resource
     private LoginTicketInterceptor loginTicketInterceptor;
 
-    @Resource
-    private LoginRequireInterceptor loginRequireInterceptor;
+//    使用spring security提高系统的安全性
+//    @Resource
+//    private LoginRequireInterceptor loginRequireInterceptor;
 
     @Resource
     private MessageInterceptor messageInterceptor;
@@ -26,8 +27,9 @@ public class WebMvcConfig implements WebMvcConfigurer {
         registry.addInterceptor(loginTicketInterceptor)
                 .excludePathPatterns("/**/*.css", "/**/*.js", "/**/*.png", "/**/*.jpg", "/**/*.jpeg");
 
-        registry.addInterceptor(loginRequireInterceptor)
-                .excludePathPatterns("/**/*.css", "/**/*.js", "/**/*.png", "/**/*.jpg", "/**/*.jpeg");
+//        使用spring security提高系统的安全性
+//        registry.addInterceptor(loginRequireInterceptor)
+//                .excludePathPatterns("/**/*.css", "/**/*.js", "/**/*.png", "/**/*.jpg", "/**/*.jpeg");
 
         registry.addInterceptor(messageInterceptor)
                 .excludePathPatterns("/**/*.css", "/**/*.js", "/**/*.png", "/**/*.jpg", "/**/*.jpeg");
