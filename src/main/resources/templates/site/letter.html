@@ -10,6 +10,7 @@
 	<title>牛客网-私信列表</title>
 </head>
 <body>
+
 	<div class="nk-container">
 		<!-- 头部 -->
 		<div th:insert="~{header :: header}"></div>
@@ -21,10 +22,10 @@
 					<!-- 选项 -->
 					<ul class="nav nav-tabs mb-3">
 						<li class="nav-item">
-							<a class="nav-link position-relative active"  th:href="@{/letter/list}">朋友私信<span class="badge badge-danger" th:text="${letterUnreadCount}" th:if="${letterUnreadCount!=0}">3</span></a>
+							<a th:class="|nav-link position-relative ${#request.getRequestURI().equals('/community/letter/list') ? 'active' :''}|" th:href="@{/letter/list}">朋友私信<span class="badge badge-danger" th:text="${letterUnreadCount}" th:if="${letterUnreadCount!=0}">3</span></a>
 						</li>
 						<li class="nav-item">
-							<a class="nav-link position-relative" th:href="@{/notice/list}">系统通知<span class="badge badge-danger" th:text="${noticeUnReadCount}" th:if="${noticeUnReadCount!=0}">27</span></a>
+							<a th:class="|nav-link position-relative ${#request.getRequestURI().equals('/community/notice/list') ? 'active' :''}|" th:href="@{/notice/list}">系统通知<span class="badge badge-danger" th:text="${noticeUnReadCount}" th:if="${noticeUnReadCount!=0}">27</span></a>
 						</li>
 					</ul>
 					<button type="button" class="btn btn-primary btn-sm position-absolute rt-0" data-toggle="modal" data-target="#sendModal">发私信</button>
@@ -57,7 +58,7 @@
 							</div>
 						</div>
 					</div>
-				</div>		
+				</div>
 				<!-- 提示框 -->
 				<div class="modal fade" id="hintModal" tabindex="-1" role="dialog" aria-labelledby="hintModalLabel" aria-hidden="true">
 					<div class="modal-dialog modal-lg" role="document">
@@ -70,8 +71,8 @@
 							</div>
 						</div>
 					</div>
-				</div>				
-				
+				</div>
+
 				<!-- 私信列表 -->
 				<ul class="list-unstyled">
 					<li class="media pb-3 pt-3 mb-3 border-bottom position-relative" th:each="map:${conversations}">

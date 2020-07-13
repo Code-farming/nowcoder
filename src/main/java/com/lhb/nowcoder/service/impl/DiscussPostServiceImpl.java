@@ -32,8 +32,8 @@ public class DiscussPostServiceImpl implements DiscussPostService {
     }
 
     @Override
-    public List<DiscussPost> findDiscussPosts(int userId, int offset, int limit) {
-        return discussPostDao.selectDiscussPost(userId, offset, limit);
+    public List<DiscussPost> findDiscussPosts(int userId, int offset, int limit,int orderMode) {
+        return discussPostDao.selectDiscussPost(userId, offset, limit,orderMode);
     }
 
     @Override
@@ -128,6 +128,12 @@ public class DiscussPostServiceImpl implements DiscussPostService {
     @Override
     public void updateStatus(int id, int status) {
         this.discussPostDao.updateStatus(id, status);
+    }
+
+    @Transactional(propagation = Propagation.REQUIRED)
+    @Override
+    public void updateScore(int id, double score) {
+        this.discussPostDao.updateScore(id, score);
     }
 
 

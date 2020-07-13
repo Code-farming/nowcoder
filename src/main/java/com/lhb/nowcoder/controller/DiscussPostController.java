@@ -9,7 +9,9 @@ import com.lhb.nowcoder.service.LikeService;
 import com.lhb.nowcoder.service.UserService;
 import com.lhb.nowcoder.util.HostHolder;
 import com.lhb.nowcoder.util.NowCoderUtil;
+import com.lhb.nowcoder.util.RedisKeyUtils;
 import com.sun.org.apache.regexp.internal.RE;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -43,6 +45,9 @@ public class DiscussPostController {
     @Resource
     private EventProducer eventProducer;
 
+    @Resource
+    private RedisTemplate redisTemplate;
+
     /**
      * 添加评论的接口
      *
@@ -75,6 +80,11 @@ public class DiscussPostController {
                 .setEntityType(ENTITY_TYPE_POST)
                 .setEntityId(post.getId());
         eventProducer.fireMessage(event);
+
+        // 计算帖子的分数
+        String redisKey = RedisKeyUtils.getPostScoreKey();
+        redisTemplate.opsForSet().add(redisKey,post.getId());
+
 
         // 报错的情况,将来统一处理.
         return NowCoderUtil.getJsonString(0, "发布成功!");
@@ -213,6 +223,11 @@ public class DiscussPostController {
                 .setEntityType(ENTITY_TYPE_POST)
                 .setEntityId(id);
         eventProducer.fireMessage(event);
+
+        // 计算帖子的分数
+        String redisKey = RedisKeyUtils.getPostScoreKey();
+        redisTemplate.opsForSet().add(redisKey,id);
+
 
         return NowCoderUtil.getJsonString(0);
     }

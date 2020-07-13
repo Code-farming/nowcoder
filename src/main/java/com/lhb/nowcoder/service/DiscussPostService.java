@@ -15,7 +15,7 @@ public interface DiscussPostService {
 
     int findDiscussPostRows(int userId);
 
-    List<DiscussPost> findDiscussPosts(int userId, int offset, int limit);
+    List<DiscussPost> findDiscussPosts(int userId, int offset, int limit, int orderMode);
 
     int addDiscussPost(DiscussPost post);
 
@@ -64,10 +64,10 @@ public interface DiscussPostService {
 
     void updateCommentCount(Integer entityId, int commentCount);
 
-    void updateType(int id,int type);
+    void updateType(int id, int type);
 
-    void updateStatus(int id,int status);
+    void updateStatus(int id, int status);
 
 
-
+    void updateScore(int postId, double score);
 }

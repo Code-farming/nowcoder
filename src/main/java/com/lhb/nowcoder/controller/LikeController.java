@@ -1,13 +1,13 @@
 package com.lhb.nowcoder.controller;
 
-import com.alibaba.fastjson.JSONObject;
 import com.lhb.nowcoder.entity.Event;
 import com.lhb.nowcoder.entity.User;
 import com.lhb.nowcoder.event.EventProducer;
 import com.lhb.nowcoder.service.LikeService;
 import com.lhb.nowcoder.util.HostHolder;
 import com.lhb.nowcoder.util.NowCoderUtil;
-import com.sun.org.apache.regexp.internal.RE;
+import com.lhb.nowcoder.util.RedisKeyUtils;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -17,7 +17,8 @@ import javax.annotation.Resource;
 import java.util.HashMap;
 import java.util.Map;
 
-import static com.lhb.nowcoder.util.NowCoderConstant.*;
+import static com.lhb.nowcoder.util.NowCoderConstant.ENTITY_TYPE_POST;
+import static com.lhb.nowcoder.util.NowCoderConstant.TOPIC_LIKE;
 
 @Controller
 public class LikeController {
@@ -29,6 +30,9 @@ public class LikeController {
 
     @Resource
     private EventProducer eventProducer;
+
+    @Resource
+    private RedisTemplate redisTemplate;
 
     @RequestMapping(path = "/like", method = RequestMethod.POST)
     @ResponseBody
@@ -56,6 +60,12 @@ public class LikeController {
                     .setEntityUserId(entityUserId)
                     .setData("postId",postId);
             eventProducer.fireMessage(event);
+
+            if (entityType==ENTITY_TYPE_POST){
+                // 计算帖子的分数
+                String redisKey = RedisKeyUtils.getPostScoreKey();
+                redisTemplate.opsForSet().add(redisKey, entityId);
+            }
         }
 
 

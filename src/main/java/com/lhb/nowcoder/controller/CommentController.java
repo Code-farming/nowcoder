@@ -7,6 +7,8 @@ import com.lhb.nowcoder.event.EventProducer;
 import com.lhb.nowcoder.service.CommentService;
 import com.lhb.nowcoder.service.DiscussPostService;
 import com.lhb.nowcoder.util.HostHolder;
+import com.lhb.nowcoder.util.RedisKeyUtils;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -32,6 +34,9 @@ public class CommentController {
 
     @Resource
     private EventProducer eventProducer;
+
+    @Resource
+    private RedisTemplate redisTemplate;
 
 
 
@@ -68,6 +73,11 @@ public class CommentController {
                     .setEntityType(ENTITY_TYPE_POST)
                     .setEntityId(discussPostId);
              eventProducer.fireMessage(event1);
+
+            // 计算帖子的分数
+            String redisKey = RedisKeyUtils.getPostScoreKey();
+            redisTemplate.opsForSet().add(redisKey,discussPostId);
+
         }
 
         return "redirect:/discuss/detail/" + discussPostId;

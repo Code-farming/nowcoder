@@ -68,7 +68,7 @@ public interface DiscussPostDao {
     int deleteById(Integer id);
 
 
-    List<DiscussPost> selectDiscussPost(int userId, int offset, int limit);
+    List<DiscussPost> selectDiscussPost(int userId, int offset, int limit,int orderMode);
 
     void updateCommentCount(@Param("id") Integer id, @Param("commentCount") int commentCount);
 
@@ -76,4 +76,5 @@ public interface DiscussPostDao {
 
     void updateStatus(@Param("id") int id,@Param("status") int status);
 
+    void updateScore(@Param("id") int id, @Param("score") double score);
 }
