@@ -1,5 +1,6 @@
 package com.lhb.nowcoder.config;
 
+import com.lhb.nowcoder.controller.interceptor.DataInterceptor;
 import com.lhb.nowcoder.controller.interceptor.LoginRequireInterceptor;
 import com.lhb.nowcoder.controller.interceptor.LoginTicketInterceptor;
 import com.lhb.nowcoder.controller.interceptor.MessageInterceptor;
@@ -22,6 +23,9 @@ public class WebMvcConfig implements WebMvcConfigurer {
     @Resource
     private MessageInterceptor messageInterceptor;
 
+    @Resource
+    private DataInterceptor dataInterceptor;
+
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(loginTicketInterceptor)
@@ -32,6 +36,9 @@ public class WebMvcConfig implements WebMvcConfigurer {
 //                .excludePathPatterns("/**/*.css", "/**/*.js", "/**/*.png", "/**/*.jpg", "/**/*.jpeg");
 
         registry.addInterceptor(messageInterceptor)
+                .excludePathPatterns("/**/*.css", "/**/*.js", "/**/*.png", "/**/*.jpg", "/**/*.jpeg");
+
+        registry.addInterceptor(dataInterceptor)
                 .excludePathPatterns("/**/*.css", "/**/*.js", "/**/*.png", "/**/*.jpg", "/**/*.jpeg");
     }
 

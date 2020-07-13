@@ -1,5 +1,7 @@
 package com.lhb.nowcoder.util;
 
+import org.apache.ibatis.annotations.Param;
+
 public class RedisKeyUtils {
     private static final String SPLIT = ":";
     private static final String PREFIX_ENTITY_LIKE = "like:entity";
@@ -9,7 +11,8 @@ public class RedisKeyUtils {
     private static final String PREFIX_KAPTCHA = "kaptcha";
     private static final String PREFIX_TICKET = "ticket";
     private static final String PREFIX_USER = "user";
-
+    private static final String PREFIX_UV = "uv";
+    private static final String PREFIX_DAU = "dau";
 
 
     // 某个实体的赞
@@ -37,17 +40,40 @@ public class RedisKeyUtils {
     }
 
     // 登录验证码
-    public static String getKaptchaKey(String owner){
-        return PREFIX_KAPTCHA+SPLIT+owner;
+    public static String getKaptchaKey(String owner) {
+        return PREFIX_KAPTCHA + SPLIT + owner;
     }
 
     // 登录凭证
-    public static String getTicketKey(String ticket){
-        return PREFIX_TICKET+SPLIT+ticket;
+    public static String getTicketKey(String ticket) {
+        return PREFIX_TICKET + SPLIT + ticket;
     }
 
     // 用户
-    public static String getUserKey(int userId){
-        return PREFIX_USER+SPLIT+userId;
+    public static String getUserKey(int userId) {
+        return PREFIX_USER + SPLIT + userId;
     }
+
+    // 单日uv
+    public static String getUVKey(String date) {
+        return PREFIX_UV + SPLIT + date;
+    }
+
+    // 区间uv
+    public static String getUVKey(String startDate, String endDate) {
+        return PREFIX_UV + SPLIT + startDate + SPLIT + endDate;
+    }
+
+
+    // 单日dau
+    public static String getDAUKey(String date) {
+        return PREFIX_DAU + SPLIT + date;
+    }
+
+    // 区间dau
+    public static String getDAUKey(String startDate, String endDate) {
+        return PREFIX_DAU + SPLIT + startDate + SPLIT + endDate;
+    }
+
+
 }

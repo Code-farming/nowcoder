@@ -42,8 +42,21 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 "/user/updatePassword"
         ).hasAnyAuthority(
                 AUTHORITY_ADMIN, AUTHORITY_USER, AUTHORITY_MODERATOR
-        ).anyRequest().permitAll()
-        .and().csrf().disable();
+        ).antMatchers(
+                "/discuss/top",
+                "/discuss/wonderful"
+        ).hasAnyAuthority(
+                AUTHORITY_MODERATOR
+        ).antMatchers(
+                "/discuss/delete"
+        ).hasAnyAuthority(
+                AUTHORITY_ADMIN
+        ).antMatchers(
+                "/data/**"
+        ).hasAnyAuthority(
+                AUTHORITY_ADMIN
+        ).anyRequest().permitAll().and().csrf().disable();
+
 
         http.exceptionHandling()
                 //未登录处理
@@ -54,7 +67,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                         if ("XMLHttpRequest".equals(xRequestedWith)) {
                             response.setContentType("application/plain;charset=utf-8");
                             PrintWriter writer = response.getWriter();
-                            writer.write(NowCoderUtil.getJsonString(403,"你还没有登录"));
+                            writer.write(NowCoderUtil.getJsonString(403, "你还没有登录"));
                         } else {
                             response.sendRedirect(request.getContextPath() + "/login");
                         }
@@ -65,14 +78,14 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                     @Override
                     public void handle(HttpServletRequest request, HttpServletResponse response, AccessDeniedException e) throws IOException, ServletException {
                         String xRequestedWith = request.getHeader("x-requested-with");
-                        if (xRequestedWith.equals("XMLHttpRequest")){
+                        if (xRequestedWith.equals("XMLHttpRequest")) {
                             // 1.1 如果是异步请求
                             response.setContentType("application/plain;charset=utf-8");
                             PrintWriter writer = response.getWriter();
-                            writer.write(NowCoderUtil.getJsonString(403,"你没有访问此功能的权限"));
-                        }else {
+                            writer.write(NowCoderUtil.getJsonString(403, "你没有访问此功能的权限"));
+                        } else {
                             // 1.2 如果不是异步请求,直接跳转到错误页面
-                            response.sendRedirect(request.getContextPath()+"/denied");
+                            response.sendRedirect(request.getContextPath() + "/denied");
                         }
                     }
                 });
