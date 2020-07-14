@@ -62,6 +62,11 @@ public interface NowCoderConstant {
     String TOPIC_PUBLISH = "publish";
 
     /**
+     *  主题: 分享
+     */
+    String TOPIC_SHARE ="share";
+
+    /**
      *  主题: 发帖
      */
     String TOPIC_DELETE = "delete";
